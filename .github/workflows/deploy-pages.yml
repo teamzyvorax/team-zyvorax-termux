@@ -1,0 +1,57 @@
+name: Deploy ZYVORA ULTRA Termux Lab
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'README.md'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Validate website
+        run: |
+          test -s index.html
+          grep -q '<title>ZYVORA ULTRA' index.html
+          grep -q 'const tools=' index.html
+          python - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          import re
+          s=Path("index.html").read_text(encoding="utf-8")
+          class Check(HTMLParser):
+              pass
+          Check().feed(s)
+          scripts=re.findall(r'<script>(.*?)</script>',s,re.S)
+          assert scripts, "No inline application script found"
+          Path("/tmp/app.js").write_text("\n".join(scripts))
+          print("HTML parsed; inline script extracted")
+          PY
+          node --check /tmp/app.js
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
