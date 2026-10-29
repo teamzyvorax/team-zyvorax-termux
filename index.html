@@ -82,6 +82,36 @@ const tools=[
 {id:"clangformat",name:"C/C++ formatter",cat:"Programming",icon:"FMT",desc:"Install clang-format for consistent C-family code style.",cmd:"pkg install clang\nclang-format --version"},
 {id:"gitignore",name:"Create a .gitignore",cat:"Git & GitHub",icon:"GIT",desc:"Ignore common local environment and secret files.",cmd:"printf '.venv/\\nnode_modules/\\n.env\\n*.db\\n' > .gitignore"},
 {id:"license",name:"Generate random safe token",cat:"Utilities",icon:"KEY",desc:"Generate local random bytes for development; never share secrets publicly.",cmd:"pkg install openssl\nopenssl rand -hex 32"}
+,{id:"grep",name:"Search text with grep",cat:"Files & System",icon:"TXT",desc:"Find a word in project files while skipping common generated folders.",cmd:"grep -RIn --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=.venv 'SEARCH_TERM' ."}
+,{id:"sed",name:"Replace text in a file",cat:"Files & System",icon:"TXT",desc:"Preview matching lines before making edits; this command only prints output.",cmd:"sed -n '1,120p' filename.txt"}
+,{id:"chmod",name:"Set script executable",cat:"Files & System",icon:"PERM",desc:"Make your own shell script executable and run it.",cmd:"chmod +x ./script.sh\n./script.sh"}
+,{id:"sha256",name:"Verify a file checksum",cat:"Utilities",icon:"HASH",desc:"Calculate a SHA-256 checksum to compare with a trusted published value.",cmd:"pkg install coreutils\nsha256sum filename.zip"}
+,{id:"sysinfo",name:"System and platform info",cat:"Files & System",icon:"SYS",desc:"Print Android/Termux platform details and basic system information.",cmd:"uname -a\ntermux-info"}
+,{id:"pythonhttp",name:"Python web server",cat:"Web Development",icon:"WEB",desc:"Serve the current folder on port 8000 for local testing; stop with Ctrl+C.",cmd:"python -m http.server 8000 --bind 127.0.0.1"}
+,{id:"phpserver",name:"PHP development server",cat:"Web Development",icon:"PHP",desc:"Preview a PHP project locally; stop with Ctrl+C.",cmd:"php -S 127.0.0.1:8000"}
+,{id:"flask",name:"Python Flask starter",cat:"Web Development",icon:"PY",desc:"Create an isolated environment and install Flask for a small local app.",cmd:"python -m venv .venv\nsource .venv/bin/activate\npython -m pip install flask"}
+,{id:"fastapi",name:"FastAPI starter packages",cat:"Web Development",icon:"API",desc:"Install FastAPI and Uvicorn in an activated virtual environment.",cmd:"python -m venv .venv\nsource .venv/bin/activate\npython -m pip install fastapi uvicorn"}
+,{id:"npmdev",name:"Run npm development script",cat:"Web Development",icon:"JS",desc:"Install project dependencies and run its declared development script.",cmd:"npm install\nnpm run dev"}
+,{id:"npmaudit",name:"Review npm dependency issues",cat:"Programming",icon:"JS",desc:"Review dependency security advisories without automatically changing packages.",cmd:"npm audit"}
+,{id:"pipcheck",name:"Check Python dependencies",cat:"Programming",icon:"PY",desc:"Check installed Python packages for incompatible requirements.",cmd:"python -m pip check"}
+,{id:"pipshow",name:"Inspect a Python package",cat:"Programming",icon:"PY",desc:"View installed package metadata and dependency information.",cmd:"python -m pip show PACKAGE_NAME"}
+,{id:"gitbranch",name:"Create a Git feature branch",cat:"Git & GitHub",icon:"GIT",desc:"Create a separate branch for your changes and switch to it.",cmd:"git switch -c feature/my-change\ngit status"}
+,{id:"gitremote",name:"Inspect Git remotes",cat:"Git & GitHub",icon:"GH",desc:"Check which repository a local project will fetch from and push to.",cmd:"git remote -v"}
+,{id:"gitstash",name:"Temporarily stash changes",cat:"Git & GitHub",icon:"GIT",desc:"Save tracked working changes temporarily, then restore them later.",cmd:"git stash push -m 'work in progress'\ngit stash list\n# Restore with: git stash pop"}
+,{id:"gitfetch",name:"Fetch latest remote changes",cat:"Git & GitHub",icon:"GH",desc:"Download remote branch information without merging it into your work.",cmd:"git fetch --all --prune\ngit branch -vv"}
+,{id:"tarunpack",name:"Extract a tar.gz archive",cat:"Files & System",icon:"ZIP",desc:"List archive contents first, then extract into a chosen folder.",cmd:"tar -tzf backup.tar.gz\nmkdir -p extracted\ntar -xzf backup.tar.gz -C extracted"}
+,{id:"unzip",name:"Extract a ZIP archive",cat:"Files & System",icon:"ZIP",desc:"List files in a ZIP before extracting them to a new folder.",cmd:"pkg install unzip\nunzip -l archive.zip\nmkdir -p extracted && unzip archive.zip -d extracted"}
+,{id:"rsync",name:"Sync a project folder",cat:"SSH & VPS",icon:"SYNC",desc:"Preview a file sync first; verify source and destination before removing --dry-run.",cmd:"pkg install rsync\nrsync -avhn ./project/ USER@SERVER_IP:/path/you/control/project/"}
+,{id:"sshconfig",name:"Create SSH host shortcut",cat:"SSH & VPS",icon:"SSH",desc:"Add a convenient alias for a server you administer; replace placeholders.",cmd:"mkdir -p ~/.ssh && chmod 700 ~/.ssh\nnano ~/.ssh/config\n# Add: Host myserver\n#       HostName SERVER_IP\n#       User USER\n#       IdentityFile ~/.ssh/id_ed25519\nchmod 600 ~/.ssh/config\nssh myserver"}
+,{id:"sqlitebackup",name:"Back up SQLite database",cat:"Programming",icon:"SQL",desc:"Use SQLite's backup command for a consistent local database copy.",cmd:"sqlite3 app.db '.backup app-backup.db'\nsqlite3 app-backup.db 'PRAGMA integrity_check;'"}
+,{id:"jsonvalidate",name:"Validate JSON file",cat:"Utilities",icon:"JSON",desc:"Parse a JSON file and pretty-print it to verify syntax.",cmd:"pkg install jq\njq . data.json"}
+,{id:"portcheck",name:"Check local listening ports",cat:"Networking",icon:"NET",desc:"Inspect services listening on local TCP/UDP ports when the tool is available.",cmd:"pkg install net-tools\nnetstat -lnt"}
+,{id:"envfile",name:"Create an environment template",cat:"Programming",icon:"ENV",desc:"Create a placeholder .env.example; never commit real secrets.",cmd:"printf 'APP_ENV=development\\nAPI_KEY=replace_me_locally\\n' > .env.example"}
+,{id:"pythonproject",name:"Create Python project layout",cat:"Programming",icon:"PY",desc:"Set up a basic source and test directory structure.",cmd:"mkdir -p my-project/src my-project/tests\ncd my-project\nprintf '# Project\\n' > README.md\nprintf '.venv/\\n__pycache__/\\n.env\\n' > .gitignore"}
+,{id:"nodeclean",name:"Clean install Node dependencies",cat:"Programming",icon:"JS",desc:"Reinstall exactly from an existing package-lock.json.",cmd:"npm ci"}
+,{id:"termuxpkg",name:"Search Termux packages",cat:"Setup",icon:"PKG",desc:"Search configured Termux repositories before installing a package.",cmd:"pkg update\npkg search PACKAGE_NAME"}
+,{id:"termuxlist",name:"List installed packages",cat:"Setup",icon:"PKG",desc:"Inspect installed packages and filter the list by a keyword.",cmd:"pkg list-installed"}
+
 ];
 const categories=["All",...new Set(tools.map(t=>t.cat))];let active="All";const $=id=>document.getElementById(id);
 function loadSaved(){try{const value=JSON.parse(localStorage.getItem("zyvora-saved-tools")||"[]");return new Set(Array.isArray(value)?value.filter(id=>tools.some(t=>t.id===id)):[])}catch{return new Set()}}
