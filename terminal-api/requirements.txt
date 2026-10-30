@@ -1,0 +1,3 @@
+fastapi
+uvicorn[standard]
+render==1.5.0
